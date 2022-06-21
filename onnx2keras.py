@@ -451,16 +451,28 @@ class TfKerasOperations(Operations):
             if len(x.shape) != 4:
                 raise NotImplementedError
             if len(axes) == 1 and starts[0] != ends[0]:
-                if axes[0] == 0:
-                    out = x[starts[0]:ends[0]:steps[0],:,:,:]
-                elif axes[0] == 1:
-                    out = x[:,:,:,starts[0]:ends[0]:steps[0]]
-                elif axes[0] == 2:
-                    out = x[:,starts[0]:ends[0]:steps[0],:,:]
-                elif axes[0] == 3:
-                    out = x[:,:,starts[0]:ends[0]:steps[0],:]
+                if ends[0] == 2**63-1: # INT_MAX
+                    if axes[0] == 0:
+                        out = x[starts[0]::steps[0],:,:,:]
+                    elif axes[0] == 1:
+                        out = x[:,:,:,starts[0]::steps[0]]
+                    elif axes[0] == 2:
+                        out = x[:,starts[0]::steps[0],:,:]
+                    elif axes[0] == 3:
+                        out = x[:,:,starts[0]::steps[0],:]
+                    else:
+                        raise NotImplementedError
                 else:
-                    raise NotImplementedError
+                    if axes[0] == 0:
+                        out = x[starts[0]:ends[0]:steps[0],:,:,:]
+                    elif axes[0] == 1:
+                        out = x[:,:,:,starts[0]:ends[0]:steps[0]]
+                    elif axes[0] == 2:
+                        out = x[:,starts[0]:ends[0]:steps[0],:,:]
+                    elif axes[0] == 3:
+                        out = x[:,:,starts[0]:ends[0]:steps[0],:]
+                    else:
+                        raise NotImplementedError
             elif tuple(axes) == (2,3) and starts[0] != ends[0] and starts[1] != ends[1]:
                 out = x[:,starts[0]:ends[0]:steps[0],starts[1]:ends[1]:steps[1],:]
             else:
