@@ -517,7 +517,7 @@ class TestOnnx:
         x = np.random.rand(2, 3, 16, 32).astype(np.float32)
         convert_and_compare_output(net, x, image_out=False)
 
-    def test_focus(self):
+    def test_yolox_focus_module(self):
         class Focus(Module):
             def forward(self, x):
                 patch_top_left = x[..., ::2, ::2]
