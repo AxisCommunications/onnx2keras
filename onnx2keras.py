@@ -543,9 +543,14 @@ class TfKerasOperations(Operations):
         return [self.make_constant(np.floor(x))]
 
     def op_div(self, a, b):
-        a = ensure_data_format(a, OnnxConstant)
-        b = ensure_data_format(b, OnnxConstant)
-        return [self.make_constant(a / b)]
+        if a.data_format is OnnxConstant:
+            a = ensure_data_format(a, OnnxConstant)
+            b = ensure_data_format(b, OnnxConstant)
+            return [self.make_constant(a / b)]
+        else:
+            out = tf.divide(a, b)
+            out.data_format = a.data_format
+            return [out]
 
     def op_upsample(self, x, scales, mode=b'nearest'):
         if mode == b'nearest':
