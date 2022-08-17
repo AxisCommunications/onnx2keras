@@ -473,6 +473,9 @@ class TfKerasOperations(Operations):
         out.data_format = OnnxConstant
         return [out]
 
+    def op_constantofshape(self, x, value):
+        return [self.make_constant(np.full_like(x, value))]
+
     def op_shape(self, x):
         shape = list(map(int, x.shape))
         if x.data_format is InterleavedImageBatch:
