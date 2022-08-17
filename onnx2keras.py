@@ -387,7 +387,7 @@ class TfKerasOperations(Operations):
             raise NotImplementedError
         return [out]
 
-    def op_pad(self, x, pads, mode, value=0.0):
+    def op_pad(self, x, pads, value=0.0, mode = b'constant'):
         x = ensure_data_format(x, InterleavedImageBatch)
         if mode == b'constant' and len(pads) == 8:
             assert len(x.shape) * 2 == len(pads)
