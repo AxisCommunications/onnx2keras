@@ -20,7 +20,7 @@ jobs:
       run: |
         sudo apt-get install protobuf-compiler
         python -m pip install --upgrade pip setuptools
-        pip install ${{ matrix.tensorflow-package }} torch torchvision onnx pytest protobuf==3.20.1
+        pip install ${{ matrix.tensorflow-package }} torch==1.11 torchvision onnx pytest protobuf==3.20.1
     - name: Test with pytest
       run: py.test -v
     - name: Build and publish
