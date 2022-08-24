@@ -617,7 +617,7 @@ class TfKerasOperations(Operations):
 
     def op_reshape(self, x, shape):
         x = ensure_data_format(x, OnnxTensor)
-        assert x.shape[0] == shape[0]
+        assert x.shape[0] == shape[0] or shape[0] == -1
         out = self.keras.layers.Reshape(shape[1:])(x)
         out.data_format = OnnxTensor
         return [out]
