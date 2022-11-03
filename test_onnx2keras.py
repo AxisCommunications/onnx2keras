@@ -68,6 +68,11 @@ class TestUtils:
 
 
 class TestOnnx:
+    def test_padding(self):
+        x = np.random.rand(1, 3, 112, 112).astype(np.float32)
+        model = torch.nn.Sequential(torch.nn.Conv2d(3, 64, (3, 3), 1, 1), torch.nn.MaxPool2d(3, 2, 1))
+        convert_and_compare_output(model, x)
+
     def test_conv(self):
         net = torch.nn.Sequential(torch.nn.Conv2d(3, 16, 7), torch.nn.ReLU())
         x = np.random.rand(1, 3, 224, 224).astype(np.float32)

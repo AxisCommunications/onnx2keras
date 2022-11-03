@@ -230,8 +230,8 @@ class TfKerasOperations(Operations):
                 padding = 'valid'
             else:
                 # ((top_pad, bottom_pad), (left_pad, right_pad))
-                pad = self.keras.layers.ZeroPadding2D(((pads[0], pads[2]), (pads[1], pads[3])))
-                x = pad(x)
+                paddings = ((0,0), (pads[0], pads[2]), (pads[1], pads[3]), (0,0))
+                x = tf.pad(x, paddings, constant_values=-127.5)
                 padding = 'valid'
             out = self.keras.layers.MaxPool2D(kernel_shape, strides, padding)(x)
             out.data_format = InterleavedImageBatch
