@@ -1,3 +1,7 @@
+END-OF-LIFE NOTICE
+==================
+Axis Communications is no longer maintaining this project
+
 # onnx2keras
 
 This is a tool for converting onnx models (as exported by for example pytorch) into tensorflow keras 
