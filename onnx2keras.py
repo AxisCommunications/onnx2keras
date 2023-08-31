@@ -205,6 +205,10 @@ class TfKerasOperations(Operations):
 
     def op_softmax(self, x, axis):
         out = self.keras.activations.softmax(x, axis=axis)
+        return [out]
+
+    def op_logsoftmax(self, x, axis):
+        out = tf.nn.log_softmax(x, axis=axis)
         out.data_format = x.data_format
         return [out]
 

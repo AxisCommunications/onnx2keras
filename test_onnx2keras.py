@@ -35,19 +35,19 @@ def _convert_and_compare_output(net, indata, precition=5, image_out=True, savabl
     onnx_model = make_onnx_model(net, torch.zeros_like(torch_indata), opset_version)
     with warnings.catch_warnings(record=True) as warns:
         warnings.simplefilter("always")
-        kernas_net = onnx2keras(onnx_model, **kwargs)
+        keras_net = onnx2keras(onnx_model, **kwargs)
         warns = [w for w in warns if w.category is OptimizationMissingWarning]
         if not missing_optimizations:
             assert len(warns) == 0
     if savable:
         with NamedTemporaryFile() as f:
             f.close()
-            kernas_net.save(f.name)
-    y2 = kernas_net.predict(indata.transpose(0, 2, 3, 1))
+            keras_net.save(f.name)
+    y2 = keras_net.predict(indata.transpose(0, 2, 3, 1))
     if image_out:
         y2 = y2.transpose(0, 3, 1, 2)
     assert_almost_equal(y1, y2, precition)
-    return kernas_net
+    return keras_net
 
 class GlobalAvgPool(Module):
     def forward(self, x):
@@ -345,6 +345,11 @@ class TestOnnx:
         net = torch.nn.Sequential(torch.nn.Conv2d(3, 16, 7), torch.nn.Sigmoid())
         x = np.random.rand(1, 3, 224, 224).astype(np.float32)
         convert_and_compare_output(net, x)
+
+    def test_logsoftmax(self):
+        net = torch.nn.Sequential(torch.nn.Conv2d(3, 1, 7), torch.nn.LogSoftmax())
+        x = np.random.rand(1, 3, 224, 224).astype(np.float32)
+        convert_and_compare_output(net, x, image_out=False)
 
     def test_upsample_nearest(self):
         net = torch.nn.Sequential(torch.nn.UpsamplingNearest2d(scale_factor=2), torch.nn.ReLU())
