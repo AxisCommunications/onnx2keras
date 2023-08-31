@@ -62,10 +62,7 @@ def ensure_compatible_data_format(a, b):
     if compatible_data_format(a.data_format, b.data_format):
         return a, b
     if b.data_format is OnnxConstant:
-        if len(b.shape) == 0:
-            return a, tf.broadcast_to(b, a.shape)
-        else:
-            return a, ensure_data_format(b, a.data_format)
+        return a, ensure_data_format(b, a.data_format)
     return ensure_data_format(a, b.data_format), b
 
 class Constant(np.ndarray):
@@ -355,8 +352,11 @@ class TfKerasOperations(Operations):
         return [out]
 
     def op_add(self, x1, x2):
-        x1, x2 = ensure_compatible_data_format(x1, x2)
-        out = self.keras.layers.Add()([x1, x2])
+        if len(x2.shape) == 0:
+            out = x1 + x2
+        else:
+            x1, x2 = ensure_compatible_data_format(x1, x2)
+            out = self.keras.layers.Add()([x1, x2])
         out.data_format = x1.data_format
         return [out]
 
